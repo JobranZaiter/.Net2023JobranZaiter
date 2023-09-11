@@ -25,7 +25,7 @@ namespace Project.Models
         public Category Category { get; set; }
         public string Image { get; set; } = "noimage.png";
         [NotMapped]
-        [FileExtension]
+        [FileExtensions]
         public IFormFile ImageUpload { get; set; }
        
     }

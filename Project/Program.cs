@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Project.Infrastructure;
 using Project.Models;
+using Nest;
+using Elasticsearch.Net;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,3 +79,13 @@ var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<Data
 SeedData.SeedDatabase(context);
 
 app.Run();
+
+var pool = new SingleNodeConnectionPool(new Uri("http://localhost:9200"));
+var settings = new ConnectionSettings(pool)
+    .DefaultIndex("books") // Set your default index
+    .DisableDirectStreaming() // Disable direct streaming for better logging (optional)
+    .PrettyJson(); // Enable pretty JSON response (optional)
+
+var client = new ElasticClient(settings);
+
+builder.Services.AddSingleton(client);
